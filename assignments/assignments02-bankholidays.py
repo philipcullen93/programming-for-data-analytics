@@ -19,6 +19,7 @@
 
 import json
 import requests
+# import requests allows the program to download the relevant data from a web page
 
 url = "https://www.gov.uk/bank-holidays.json"
 response = requests.get(url)
@@ -39,31 +40,44 @@ for bank_holiday in ni_holidays:
 # Part 2: Print only the holidays unique to NI
 
 holidays_by_regions = {}
+# Creates an empty dictionary which will be populated by the bank holidays in Scotland, England and Wales, and Northern Ireland.
 
 for region in data:
     titles = set()
     for holiday in data[region]["events"]:
         titles.add(holiday["title"])
     holidays_by_regions[region] = titles
+# Loops through each UK region
+# In each region it creates a set of all the holiday titles
+# The results are stored within holidays_by_regions
 
 unique_ni_holidays = []
+# creates an empty list, which will be filled with bank holidays that only occur in Northern Ireland
 
 for holiday in ni_holidays:
+# Starts a loop over ni_holidays
     name = holiday["title"]
+    # Extracts the associated "title" from the holiday dictionary
     is_unique = True
-
+    # Initializes a boolean flag is_unique to True for a holiday
     for region in data:
         if region != "northern-ireland":
+        # Skips Northern Ireland checking against itself
             if name in holidays_by_regions[region]:
+            # Checks if the name appears in the dictionary holidays_by_regions
                 is_unique = False
+                # If the name is found in another region’s set, marks the holiday as not unique.
                 break
+                # Immediately exit the inner for region in data loop because we already know the holiday is not unique — no need to check more regions.
 
     if is_unique:
         unique_ni_holidays.append(holiday)
+        # f is_unique is True, append the entire holiday dictionary to the unique_ni_holidays list.
 
 
 print("\nUnique to Northern Ireland:")
 for holiday in unique_ni_holidays:
     print(f"{holiday["date"]} - {holiday["title"]}")
+    # Prints the Dates of the Holiday and Title of the bank holidays that are unique to Northern Ireland.
 
             
